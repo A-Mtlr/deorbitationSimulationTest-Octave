@@ -1,26 +1,29 @@
-%% Example 2
-% Solve r1'(t)=r2(t) with r1(t0)=6371.000+400.000
-% Solve r2'(t)=1/r1(t).r2(t)²-GM/r1(t)²+C1.G(r1(t))-C2.r2² with r2(t0)=0
-r1_t0 = 6771000;                  % Initial Condition
-r2_t0 = 0; %7672.36; %vitesse d'orbitation à 400km d'altitude
-%h = nb of seconds in 1 day
-h = 0.1;                 % Time step
-t = 0:h:500;               % t goes from 0 to 1 year in seconds.
-zz = length(t);
+% Equation resolution of Newton's second law, ie second order nonlinear differential equation
+% First approach with the Euler method
+
+% But Euler's method is a first order method, hence the need to apply it twice to our equation
+
+% Solve r1'(t) = r2(t) with r1(t0) = Rt + r0 = 6371.000 + 400.000
+% Solve r2'(t) = 1/r1(t).r2(t)Â² - GM/r1(t)Â² + C1.G(r1(t)) - C2.r2Â² with r2(t0) = 0
+r1_t0 = 6771000;                  
+r2_t0 = 0;      %vitesse d'orbitation Ã  400km d'altitude
+
+h = 0.1;                   % Time step
+t = 0:h:500;               
 
 distance = zeros(1,length(t));
 
-%initialisation de la liste contenant le rayon
-r1star = zeros(1,length(t));  % Preallocate array (good coding practice)
-%initialisation de la liste contenant la vitesse
+%initialisation de la liste contenant la distance au centre de la Terre Ã  chaque instant
+r1star = zeros(1,length(t));  % Preallocate array
+%initialisation de la liste contenant la vitesses radiale Ã  chaque instant t
 r2star = zeros(1,length(t));
-%initialisation de la liste contenant la force centrifuge
+%initialisation de la liste contenant la force centrifuge Ã  chaque instant t
 Fcentrifuge = zeros(1,length(t));
-%initialisation de la liste contenant la force gravitationnelle
+%initialisation de la liste contenant la force gravitationnelle Ã  chaque instant t
 Fgravity = zeros(1,length(t));
-%initialisation de la liste contenant la force de rayonnement solaire
+%initialisation de la liste contenant la force de rayonnement solaire Ã  chaque instant t
 FsolarRadiation = zeros(1,length(t));
-%initialisation de la liste contenant la force trainee atm
+%initialisation de la liste contenant la force trainee atm Ã  chaque instant t
 FdragAtm = zeros(1,length(t));
 
 
@@ -30,7 +33,7 @@ logari = zeros(1,length(t));
 lineaR = zeros(1,length(t));
 
 
-r1star(1) = r1_t0;   %rayon initial        % Initial condition gives solution at t=0.
+r1star(1) = r1_t0;   %distance initial       
 r2star(1) = r2_t0;   %vitesse initiale
 p=r1star(1);
 % preliminary calculations 
@@ -361,7 +364,7 @@ for i=1:(length(t))
           FsolarRadiation(i) = -C1*(1+eta);
           FdragAtm(i) = (1/2*rho*C2*r2star(i)*r2star(i))*cos(pi/4);
           
-          %Seconde utilisation de la méthode d'Euler
+          %Seconde utilisation de la mÃ©thode d'Euler
           k2 = Fcentrifuge(i)+Fgravity(i)+FsolarRadiation(i)+FdragAtm(i);
           r2star(i+1) = r2star(i) + k2*h;
           
@@ -378,11 +381,11 @@ for i=1:(length(t))
     end
 end
 
-%A décommenter lors de l'affichage du comparatif des forces (A commenter sinon)
+%A dÃ©commenter lors de l'affichage du comparatif des forces (A commenter sinon)
 %plot(distance, Fcentrifuge, distance, Fgravity, distance, FsolarRadiation, distance, FdragAtm);
 %legend('Fcentrifuge', 'Fgravity', 'FsolarRadiation', 'FdragAtm');
 
-%A décommenter lors de l'affichage du comparatif de la distance radiale et de f(t) = R_{init} - exp(t/10)(A commenter sinon)
+%A dÃ©commenter lors de l'affichage du comparatif de la distance radiale et de f(t) = R_{init} - exp(t/10)(A commenter sinon)
 %plot(t, distance, t, expon); %, t, logari, t, lineaR);
 %legend('distance radiale du CubeSat', 'f(t) = R_{init} - exp(t/10)');
 
