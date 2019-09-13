@@ -52,6 +52,7 @@ for i=1:(length(t))
         r1star(i+1) = r1star(i) + k1*h; % Approximate solution for next value of y
         
         % preliminary calculations for solar radiation force
+        % first parameter C1
         alpha=atan(d/(r1star(i)));
         theta=2*asin(6371000/(r1star(i)));
         thetaPrime = alpha + theta;
@@ -59,7 +60,7 @@ for i=1:(length(t))
         A1=(3+2*sqrt(2)+A/d)*d*d/2; 
         nu=1-theta/(2*pi);
         C1=Pmf*A1*nu/m;
-
+        % second parameter eta
         thetaSecond=(5*pi-3*theta)/32;
         partieSup=cos(thetaSecond)-1.99*cos(asin((sin(thetaSecond))/1.99));
         partieInf=cos(thetaSecond)+1.99*cos(asin((sin(thetaSecond))/1.99));
@@ -67,9 +68,13 @@ for i=1:(length(t))
 
 
         % preliminary calculations for atm drag force
+        %first parameter C2
         % C2=Cd*A2/m with Cd=0.80 the drag coefficient and A2=d*d*sqrt(2) the cross sectional area
         C2=1.131370849898476/m;
-        
+        % second parameter rho the density of the atm fluid, but we have not an expression of it for such altitude
+        % thus, we use data base MSISE-90
+        % The MSISE-90 model describes the neutral temperature and densities in Earth's atmosphere from ground to thermospheric heights (~600km)
+        % and is made by NASA Goddard Space Flight Center
         %if our distance of Earth's center is between:
         %    x1=Rearth+400km 
         %and x2=Rearth+380km
