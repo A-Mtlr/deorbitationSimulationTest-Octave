@@ -48,6 +48,7 @@ for i=1:(length(t))
     
     if (r1star(i)<=6371000+400000) && (r1star(i)>6371000)
         
+        %First use Euler's method
         k1 = r2star(i);  % approx of the velocity at instant i-1
         r1star(i+1) = r1star(i) + k1*h; % Approximate solution for next value of y
         
@@ -73,8 +74,10 @@ for i=1:(length(t))
         C2=1.131370849898476/m;
         % second parameter rho the density of the atm fluid, but we have not an expression of it for such altitude
         % thus, we use data base MSISE-90
-        % The MSISE-90 model describes the neutral temperature and densities in Earth's atmosphere from ground to thermospheric heights (~600km)
-        % and is made by NASA Goddard Space Flight Center
+        % The MSISE-90 model describes the densities in Earth's atmosphere from ground to thermospheric heights (~600km)
+        % and it's made by NASA Goddard Space Flight Center
+        % With this database, we draw a line between each data to get a density for each distance (even rational number)
+        %
         %if our distance of Earth's center is between:
         %    x1=Rearth+400km 
         %and x2=Rearth+380km
@@ -85,10 +88,9 @@ for i=1:(length(t))
           slope=(0.00000000000389-0.00000000000555)/(400000-380000);
           %yIntercept=y1-slope*x1 (=y2-slope*x2)
           yIntercept=0.00000000000389-slope*(6371000+400000);
-          %equation d'une droite permettant d'obtenir la valeur de rho avec seulement 2 autres valeurs
+          %equation of a line to obtain the value of rho with only 2 other values
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints400_380 = nbPoints400_380+1; 
     %______________________________________________________________________________%    
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+380km 
@@ -101,7 +103,6 @@ for i=1:(length(t))
           yIntercept=0.00000000000555-slope*(6371000+380000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints380_360 = nbPoints380_360+1; 
     %______________________________________________________________________________%      
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+360km 
@@ -114,7 +115,6 @@ for i=1:(length(t))
           yIntercept=0.00000000000799-slope*(6371000+360000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints360_340 = nbPoints360_340+1; 
     %______________________________________________________________________________%              
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+340km 
@@ -127,7 +127,6 @@ for i=1:(length(t))
           yIntercept=0.0000000000116-slope*(6371000+340000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints340_320 = nbPoints340_320+1; 
     %______________________________________________________________________________%                      
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+320km 
@@ -140,7 +139,6 @@ for i=1:(length(t))
           yIntercept=0.0000000000172-slope*(6371000+320000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints320_300 = nbPoints320_300+1; 
     %______________________________________________________________________________%                              
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+300km 
@@ -153,7 +151,6 @@ for i=1:(length(t))
           yIntercept=0.0000000000258-slope*(6371000+300000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints300_280 = nbPoints300_280+1; 
     %______________________________________________________________________________%                                     
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+280km 
@@ -166,7 +163,6 @@ for i=1:(length(t))
           yIntercept=0.0000000000394-slope*(6371000+280000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints280_260 = nbPoints280_260+1; 
     %______________________________________________________________________________%                                            
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+260km 
@@ -179,7 +175,6 @@ for i=1:(length(t))
           yIntercept=0.0000000000616-slope*(6371000+260000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints260_240 = nbPoints260_240+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+240km 
@@ -192,7 +187,6 @@ for i=1:(length(t))
           yIntercept=0.0000000000991-slope*(6371000+240000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints240_220 = nbPoints240_220+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+220km 
@@ -205,7 +199,6 @@ for i=1:(length(t))
           yIntercept=0.000000000166-slope*(6371000+220000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints220_200 = nbPoints220_200+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+200km 
@@ -218,7 +211,6 @@ for i=1:(length(t))
           yIntercept=0.000000000291-slope*(6371000+200000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints200_180 = nbPoints200_180+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+180km 
@@ -231,7 +223,6 @@ for i=1:(length(t))
           yIntercept=0.000000000551-slope*(6371000+180000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints180_160 = nbPoints180_160+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+160km 
@@ -244,7 +235,6 @@ for i=1:(length(t))
           yIntercept=0.00000000118-slope*(6371000+160000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints160_140 = nbPoints160_140+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+140km 
@@ -257,7 +247,6 @@ for i=1:(length(t))
           yIntercept=0.00000000326-slope*(6371000+140000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints140_120 = nbPoints140_120+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+120km 
@@ -270,7 +259,6 @@ for i=1:(length(t))
           yIntercept=0.000000018-slope*(6371000+120000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints120_100 = nbPoints120_100+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+100km 
@@ -283,7 +271,6 @@ for i=1:(length(t))
           yIntercept=0.000000508-slope*(6371000+100000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints100_80 = nbPoints100_80+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+80km 
@@ -296,7 +283,6 @@ for i=1:(length(t))
           yIntercept=0.0000168-slope*(6371000+80000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints80_60 = nbPoints80_60+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+60km 
@@ -309,7 +295,6 @@ for i=1:(length(t))
           yIntercept=0.000331-slope*(6371000+60000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints60_40 = nbPoints60_40+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+40km 
@@ -322,7 +307,6 @@ for i=1:(length(t))
           yIntercept=0.00407-slope*(6371000+40000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints40_20 = nbPoints40_20+1; 
     %______________________________________________________________________________%                                                   
         %elseif our distance of Earth's center is between:
         %    x1=Rearth+20km 
@@ -335,49 +319,36 @@ for i=1:(length(t))
           yIntercept=0.0949-slope*(6371000+20000);
           rho=slope*r1star(i)+yIntercept;
           
-          nbPoints20_0 = nbPoints20_0+1; 
-
         end
 
-        %if rho == -1
-          %k2 = -1;
-          %r2star(i+1) = -1;
-        %else  
+          % calculations of Forces
           Fcentrifuge(i) = r2star(i)*r2star(i)/r1star(i);
           Fgravity(i) = -GM/(r1star(i)*r1star(i));
           FsolarRadiation(i) = -C1*(1+eta);
           FdragAtm(i) = (1/2*rho*C2*r2star(i)*r2star(i))*cos(pi/4);
           
-          %Seconde utilisation de la méthode d'Euler
+          %Second use of Euler's method
           k2 = Fcentrifuge(i)+Fgravity(i)+FsolarRadiation(i)+FdragAtm(i);
           r2star(i+1) = r2star(i) + k2*h;
           
-          %Redimensionnement de la distance radiale, en terme d'altitude en km
+          %Resizing the radial distance, in terms of altitude in km
           distance(i) = (r1star(i)-6371000)/1000;
           
-          %fonctions comparatives
-          
+          %comparative functions
           %expon(i) = round(exp(i)); %pb -> "warning: opengl_renderer: data values greater than float capacity."
-          expon(i) = 400-(1 + (i)/11.2 + ((i/11.2))^2/2); %developpement de Taylor
+          expon(i) = 400-(1 + (i)/11.2 + ((i/11.2))^2/2); %Taylor's development
           logari(i) = -log(i)*GM;
           lineaR(i) = i;
-       % end  
     end
 end
 
-%A décommenter lors de l'affichage du comparatif des forces (A commenter sinon)
+% To uncomment when displaying the force comparison (to comment otherwise)
 %plot(distance, Fcentrifuge, distance, Fgravity, distance, FsolarRadiation, distance, FdragAtm);
 %legend('Fcentrifuge', 'Fgravity', 'FsolarRadiation', 'FdragAtm');
 
-%A décommenter lors de l'affichage du comparatif de la distance radiale et de f(t) = R_{init} - exp(t/10)(A commenter sinon)
+% To uncomment when displaying the comparison of the radial distance and f(t) = R_{init} - exp(t/10)(to comment otherwise)
 %plot(t, distance, t, expon); %, t, logari, t, lineaR);
 %legend('distance radiale du CubeSat', 'f(t) = R_{init} - exp(t/10)');
 
-plot(t, distance);%, t, logari);
-legend('distance radiale du CubeSat', 'f(t) = ln(t)*GM');
-
-%altitude = zeros(1,length(t));
-%for i=1:(length(t))
-%  altitude(i) = -0.5*9.81*i*i+7667*i+400000;
-%end  
-%plot(t, altitude);
+plot(t, distance);
+legend('radial distance of CubeSat', 'f(t) = ln(t)*GM');
