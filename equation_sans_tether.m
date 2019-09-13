@@ -3,84 +3,60 @@
 
 % But Euler's method is a first order method, hence the need to apply it twice to our equation
 
-% Solve r1'(t) = r2(t) with r1(t0) = Rt + r0 = 6371.000 + 400.000
+% Solve r1'(t) = r2(t) with r1(t0) = Rearth + r0 = 6371.000,0 + 400.000,0
 % Solve r2'(t) = 1/r1(t).r2(t)² - GM/r1(t)² + C1.G(r1(t)) - C2.r2² with r2(t0) = 0
 r1_t0 = 6771000;                  
-r2_t0 = 0;      %vitesse d'orbitation à 400km d'altitude
+r2_t0 = 0;      % radial velocity at 400km altitude
 
 h = 0.1;                   % Time step
 t = 0:h:500;               
 
 distance = zeros(1,length(t));
 
-%initialisation de la liste contenant la distance au centre de la Terre à chaque instant
+%initialization of the list containing the distance to the center of the Earth at each instant t
 r1star = zeros(1,length(t));  % Preallocate array
-%initialisation de la liste contenant la vitesses radiale à chaque instant t
+%initialization of the list containing the radial velocity at each instant t
 r2star = zeros(1,length(t));
-%initialisation de la liste contenant la force centrifuge à chaque instant t
+%initialization of the list containing the centrifugal force at each instant t
 Fcentrifuge = zeros(1,length(t));
-%initialisation de la liste contenant la force gravitationnelle à chaque instant t
+%initialization of the list containing the gravitational force at each moment t
 Fgravity = zeros(1,length(t));
-%initialisation de la liste contenant la force de rayonnement solaire à chaque instant t
+%initialization of the list containing the solar radiation force at each instant t
 FsolarRadiation = zeros(1,length(t));
-%initialisation de la liste contenant la force trainee atm à chaque instant t
+%initialization of the list containing the atmospheric drag force at each instant t
 FdragAtm = zeros(1,length(t));
 
 
-%Fonctions comparatives
+%comparative functions
 expon = zeros(1,length(t));
 logari = zeros(1,length(t));
 lineaR = zeros(1,length(t));
 
 
-r1star(1) = r1_t0;   %distance initial       
-r2star(1) = r2_t0;   %vitesse initiale
-p=r1star(1);
+r1star(1) = r1_t0;   % initial distance        
+r2star(1) = r2_t0;   % initial velocity
+
 % preliminary calculations 
 GM=6.674*10^(-11)*5.972*10^24;
 Pmf=0.0000034390458215;
 d=0.01;
 m=1.33;
-temps=zeros(1,length(t));
 
-nbPoints400_380 = 0;
-nbPoints380_360 = 0;
-nbPoints360_340 = 0;
-nbPoints340_320 = 0;
-nbPoints320_300 = 0;
-nbPoints300_280 = 0;
-nbPoints280_260 = 0;
-nbPoints260_240 = 0;
-nbPoints240_220 = 0;
-nbPoints220_200 = 0;
-nbPoints200_180 = 0;
-nbPoints180_160 = 0;
-nbPoints160_140 = 0;
-nbPoints140_120 = 0;
-nbPoints120_100 = 0;
-nbPoints100_80 = 0;
-nbPoints80_60 = 0;
-nbPoints60_40 = 0;
-nbPoints40_20 = 0;
-nbPoints20_0 = 0;
 
-% Solve r1(r2) as a first order (non) linear differential equation
+% Solve r1 and r2 as respectively a first order linear and non linear differential equation
 for i=1:(length(t))
-    temps(i+1) =temps(i) +1;
+    
     if (r1star(i)<=6371000+400000) && (r1star(i)>6371000)
         
-        k1 = r2star(i);  % Previous approx for y gives approx for deriv
-        %if r2star(i) == -1
-          %r1star(i+1) = -1;
-        %else  
-          r1star(i+1) = r1star(i) + k1*h; % Approximate solution for next value of y
-        %end  
-        beta = r1star(i);
+        k1 = r2star(i);  % approx of the velocity at instant i-1
+        r1star(i+1) = r1star(i) + k1*h; % Approximate solution for next value of y
+        
+        % preliminary calculations for solar radiation force
         alpha=atan(d/(r1star(i)));
         theta=2*asin(6371000/(r1star(i)));
         thetaPrime = alpha + theta;
         A=2*d*(1/(tan(thetaPrime))+1)*cos(pi/2-thetaPrime);
-        A1=(3+2*sqrt(2)+A/d)*d*d/2;
+        A1=(3+2*sqrt(2)+A/d)*d*d/2; 
         nu=1-theta/(2*pi);
         C1=Pmf*A1*nu/m;
 
@@ -89,8 +65,11 @@ for i=1:(length(t))
         partieInf=cos(thetaSecond)+1.99*cos(asin((sin(thetaSecond))/1.99));
         eta=partieSup/partieInf;
 
-        %C2=Cd*A2/m avec Cd=0.80 t A2=d*d*sqrt(2)
+
+        % preliminary calculations for atm drag force
+        % C2=Cd*A2/m with Cd=0.80 the drag coefficient and A2=d*d*sqrt(2) the cross sectional area
         C2=1.131370849898476/m;
+        
         %if our distance of Earth's center is between:
         %    x1=Rearth+400km 
         %and x2=Rearth+380km
